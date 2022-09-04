@@ -9,10 +9,10 @@
     "build": "vue-cli-service build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "main": "index.js",
+  "main": "main.js",
   "dependencies": {
     "core-js": "^3.8.3",
-    "vue": "^3.2.13",
+    "vue": "^3.2.38",
     "vue-router": "^4.0.3",
     "vuex": "^4.0.0"
   },
