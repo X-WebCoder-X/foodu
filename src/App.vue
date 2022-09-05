@@ -29,16 +29,21 @@ export default {
 }
 
 #app {
-  font-family: "Tenor Sans", Arial, sans-serif;
+  font-family: "Tenor Sans", Arial;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  max-width: 375px;
+  /* max-width: 375px; */
 }
 
 .left-right-arrow {
   width: 124px;
+}
+
+.container {
+  margin: 0 auto;
+  width: 95%;
 }
 
 </style>
