@@ -43,45 +43,23 @@
     <div class="new-arrival section">
       <div class="container">
         <h1 class="title">New Arrival</h1>
-      <img src="@/assets/icons/left-right-arrow.svg" class="left-right-arrow" alt="line">
-      <ul>
-        <li><a href="#">All</a></li>
-        <li><a href="#">Apparel</a></li>
-        <li><a href="#">Dress</a></li>
-        <li><a href="#">Tshirt</a></li>
-        <li><a href="#">Bag</a></li>
-      </ul>
-      <div class="new-arrival__wrap">
-        <div class="new-arrival__item">
-          <img class="new-arrival__img" src="@/assets/img/arrival1.svg" alt="arrival">
-          <p>item1</p>
-          <span>$120</span>
+        <img src="@/assets/icons/left-right-arrow.svg" class="left-right-arrow" alt="line">
+        <ul class="nav">
+          <li class="nav__item nav__current" @click="filterArrival('all'), navTarget($event)">All</li>
+          <li class="nav__item" @click="filterArrival('apparel'), navTarget($event)">Apparel</li>
+          <li class="nav__item" @click="filterArrival('dress'), navTarget($event)">Dress</li>
+          <li class="nav__item" @click="filterArrival('tshirt'), navTarget($event)">Tshirt</li>
+          <li class="nav__item" @click="filterArrival('bag'), navTarget($event)">Bag</li>
+        </ul>
+        <div class="new-arrival__wrap">
+          <div 
+          v-for="item in filteredArrival" 
+          class="new-arrival__item">
+            <img class="new-arrival__img" :src="item.url" alt="arrival">
+            <p class="new-arrival__title">{{item.name}}</p>
+            <span class="new-arrival__price">{{item.price}}</span>
+          </div>
         </div>
-        <div class="new-arrival__item">
-          <img class="new-arrival__img" src="@/assets/img/arrival2.svg" alt="arrival">
-          <p>item2</p>
-          <span>$120</span>
-        </div>
-        <div class="new-arrival__item">
-          <img class="new-arrival__img" src="@/assets/img/arrival3.svg" alt="arrival">
-          <p>item3</p>
-          <span>$120</span>
-        </div>
-        <div class="new-arrival__item">
-          <img class="new-arrival__img" src="@/assets/img/arrival4.svg" alt="arrival">
-          <p>item4</p>
-          <span>$120</span>
-        </div>
-        <div class="new-arrival__item">
-          <img class="new-arrival__img" src="@/assets/img/arrival1.svg" alt="arrival">
-          <p>item5</p>
-          <span>$120</span>
-        </div>
-      </div>
-      <div>
-        <span>Explore more</span>
-        <img src="" alt="">
-      </div>
       </div>
     </div>
   </section>
@@ -214,7 +192,15 @@
         carousel: {
           slider: document.querySelector(".banner__slider"),
           slideIndex: 0,
-        }
+        },
+        arrival: [
+          {id:1, type: "apparel", name: "21WN reversible angora cardigan", url:require("@/assets/img/arrival1.svg"),price: "$120"},
+          {id:2, type: "dress", name: "21WN reversible angora cardigan", url:require("@/assets/img/arrival2.svg"),price: "$70"},
+          {id:3, type: "tshirt", name: "21WN reversible angora cardigan", url:require("@/assets/img/arrival3.svg"),price: "$10"},
+          {id:4, type: "bag", name: "21WN reversible angora cardigan", url:require("@/assets/img/arrival4.svg"),price: "$180"},
+          {id:5, type: "bag", name: "21WN reversible angora cardigan", url:require("@/assets/img/arrival4.svg"),price: "$210"}
+        ],
+        filteredArrival: []
       }
     },
     methods: {
@@ -234,14 +220,31 @@
                 context.carousel.slideIndex = 0;
               },1000)
             }
-          console.log("slideIndex: " + context.carousel.slideIndex);
-          console.log("sliderItems.length: " + sliderItems.length);
-
+          //console.log("slideIndex: " + context.carousel.slideIndex);
         }, 5000);
+      },
+      filterArrival(type) {
+        this.filteredArrival = [];
+        if(type === "all") {
+          this.filteredArrival = this.arrival.filter(item => item.type)
+        }else {
+          this.filteredArrival = this.arrival.filter(item => item.type === type)
+        }
+      },
+      navTarget(event) {
+        let navLinks = document.querySelectorAll(".nav__item");
+        for(let i = 0; i < navLinks.length; i++) {
+          if(navLinks[i].classList.contains("nav__current")){
+            navLinks[i].classList.remove("nav__current")
+          }
+        }
+        event.target.classList.add("nav__current")
+        console.log(navLinks)
       }
     },
     mounted(){
-      this.startCarousel()
+      this.startCarousel();
+      this.filterArrival("all");
     }
   }
 </script>
@@ -319,6 +322,24 @@
     align-items: center;
   }
 
+  .nav {
+    text-decoration: none;
+    list-style-type: none;
+    display: flex;
+    justify-content: space-around;
+    margin: 15px 0;
+  }
+
+  .nav__item {
+    display: inline-block;
+    color: #888888;
+    font-size: 14px;
+  }
+
+  .nav__current {
+    color: #212806;
+  }
+
   .new-arrival__wrap {
     display: flex;
     flex-wrap: wrap;
@@ -327,11 +348,22 @@
 
   .new-arrival__item {
     width: 45%;
+    margin: 5px 0;
   }
 
   .new-arrival__img {
     width: 100%;
   }
+
+  .new-arrival__title {
+    color:#333333;
+    font-size: 12px;
+  }
+
+  .new-arrival__price {
+    color: #dd8560;
+    font-size: 15px;
+}
 
   .brands__grid {
     display: grid;
