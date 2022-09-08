@@ -45,11 +45,46 @@
         <h1 class="title">New Arrival</h1>
         <img src="@/assets/icons/left-right-arrow.svg" class="left-right-arrow" alt="line">
         <ul class="nav">
-          <li class="nav__item nav__current" @click="filterArrival('all'), navTarget($event)">All</li>
-          <li class="nav__item" @click="filterArrival('apparel'), navTarget($event)">Apparel</li>
-          <li class="nav__item" @click="filterArrival('dress'), navTarget($event)">Dress</li>
-          <li class="nav__item" @click="filterArrival('tshirt'), navTarget($event)">Tshirt</li>
-          <li class="nav__item" @click="filterArrival('bag'), navTarget($event)">Bag</li>
+          <li class="nav__item nav__current" @click="filterArrival('all'), navTarget($event)">
+            All
+            <rectangle-icon class="nav__rectangle" 
+            v-if="this.currentType === 'all'"
+            :style="{fill:'red'}"
+            >
+      </rectangle-icon> 
+          </li>
+          <li class="nav__item" @click="filterArrival('apparel'), navTarget($event)">
+            Apparel
+            <rectangle-icon class="nav__rectangle"
+            v-if="this.currentType === 'apparel'"
+            :style="{fill:'red'}"
+            >
+      </rectangle-icon> 
+          </li>
+          <li class="nav__item" @click="filterArrival('dress'), navTarget($event)">
+            Dress
+            <rectangle-icon class="nav__rectangle"
+            v-if="this.currentType === 'dress'"
+            :style="{fill:'red'}"
+            >
+      </rectangle-icon> 
+          </li>
+          <li class="nav__item" @click="filterArrival('tshirt'), navTarget($event)">
+            Tshirt
+            <rectangle-icon class="nav__rectangle" 
+            v-if="this.currentType === 'tshirt'"
+            :style="{fill:'red'}"
+            >
+          </rectangle-icon> 
+          </li>
+          <li class="nav__item" @click="filterArrival('bag'), navTarget($event)">
+            Bag
+            <rectangle-icon class="nav__rectangle" 
+            v-if="this.currentType === 'bag'"
+            :style="{fill:'red'}"
+            >
+            </rectangle-icon> 
+          </li>
         </ul>
         <div class="new-arrival__wrap">
           <div 
@@ -114,6 +149,28 @@
         <source src="@/assets/video/main_theme.mp4" type="video/mp4">
         Your browser does not support HTML video.
       </video>
+    </div>
+  </section>
+  <section>
+    <div class="jfu section">
+      <div class="container jfu__container">
+        <h1 class="title">Just for you</h1>
+        <img src="@/assets/icons/left-right-arrow.svg" class="left-right-arrow" alt="line">
+        <div class="jfu__wrap" 
+        @mousedown = "startSlider"
+        @mousemove = "moveSlider"
+        @mouseup="stopSlider"
+        >
+          <div 
+          v-for="item in arrival" 
+          class="jfu__item">
+            <img class="jfu__img" :src="item.url" alt="arrival">
+            <p class="jfu__title">{{item.name}}</p>
+            <span class="jfu__price">{{item.price}}</span>
+            <span class="jfu__price">x: {{x}}</span>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
   <section>
@@ -200,7 +257,10 @@
           {id:4, type: "bag", name: "21WN reversible angora cardigan", url:require("@/assets/img/arrival4.svg"),price: "$180"},
           {id:5, type: "bag", name: "21WN reversible angora cardigan", url:require("@/assets/img/arrival4.svg"),price: "$210"}
         ],
-        filteredArrival: []
+        filteredArrival: [],
+        currentType: "",
+        dragging: false,
+        x: 'no'
       }
     },
     methods: {
@@ -226,25 +286,44 @@
       filterArrival(type) {
         this.filteredArrival = [];
         if(type === "all") {
-          this.filteredArrival = this.arrival.filter(item => item.type)
+         this.filteredArrival = this.arrival.filter(item => item.type)
         }else {
           this.filteredArrival = this.arrival.filter(item => item.type === type)
         }
+        this.currentType = type
+        console.log(this.currentType)
       },
       navTarget(event) {
         let navLinks = document.querySelectorAll(".nav__item");
-        for(let i = 0; i < navLinks.length; i++) {
+       for(let i = 0; i < navLinks.length; i++) {
           if(navLinks[i].classList.contains("nav__current")){
             navLinks[i].classList.remove("nav__current")
           }
         }
         event.target.classList.add("nav__current")
         console.log(navLinks)
+      },
+      startSlider(event) {
+        this.dragging = true;
+        this.x = event.clientX
+        console.log(this.x)
+      },
+      stopSlider() {
+        this.dragging = false;
+        this.x = 'no'
+        console.log("Отпустили мышь")
+      },
+      moveSlider(event) {
+        if (this.dragging) {
+          this.x = event.clientX;
+          console.log(this.x)
+        }
       }
     },
     mounted(){
       this.startCarousel();
       this.filterArrival("all");
+      window.addEventListener('mouseup', this.stopSlider)
     }
   }
 </script>
@@ -331,7 +410,9 @@
   }
 
   .nav__item {
-    display: inline-block;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     color: #888888;
     font-size: 14px;
   }
@@ -363,7 +444,36 @@
   .new-arrival__price {
     color: #dd8560;
     font-size: 15px;
-}
+  }
+
+  .jfu__wrap {
+    display: flex;
+    width: calc(45%*5);
+    justify-content: space-between;
+  }
+
+  .jfu__item {
+    width: 45%;
+    margin: 5px 5px;
+  }
+
+  .jfu__item:last-child {
+    margin-right: 0px;
+  }
+
+  .jfu__img {
+    width: 100%;
+  }
+
+  .jfu__title {
+    color:#333333;
+    font-size: 12px;
+  }
+
+  .jfu__price {
+    color: #dd8560;
+    font-size: 15px;
+  }
 
   .brands__grid {
     display: grid;

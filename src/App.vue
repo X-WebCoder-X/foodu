@@ -37,6 +37,14 @@ export default {
   /* max-width: 375px; */
 }
 
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+
 .left-right-arrow {
   width: 124px;
 }
