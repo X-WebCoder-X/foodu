@@ -157,12 +157,14 @@
         <h1 class="title">Just for you</h1>
         <img src="@/assets/icons/left-right-arrow.svg" class="left-right-arrow" alt="line">
         <div class="jfu__wrap" 
+        ref="jfuSlider"
         @mousedown = "startSlider"
         @mousemove = "moveSlider"
         @mouseup="stopSlider"
         >
           <div 
-          v-for="item in arrival" 
+          v-for="item in arrival"
+          :key="item.id"
           class="jfu__item">
             <img class="jfu__img" :src="item.url" alt="arrival">
             <p class="jfu__title">{{item.name}}</p>
@@ -247,7 +249,6 @@
     data() {
       return {
         carousel: {
-          slider: document.querySelector(".banner__slider"),
           slideIndex: 0,
         },
         arrival: [
@@ -260,7 +261,10 @@
         filteredArrival: [],
         currentType: "",
         dragging: false,
-        x: 'no'
+        startX:0,
+        currentX: 0,
+        finishX: 0,
+        touchX: 0,
       }
     },
     methods: {
@@ -305,18 +309,51 @@
       },
       startSlider(event) {
         this.dragging = true;
-        this.x = event.clientX
-        console.log(this.x)
-      },
+        if(this.startX === 0) {
+          this.startX = event.clientX;
+        }else {
+          this.touchX = event.clientX;
+        }
+        console.log("startX: " + this.startX)
+    },
       stopSlider() {
-        this.dragging = false;
-        this.x = 'no'
-        console.log("Отпустили мышь")
+        this.dragging = false;  
+        //this.finishX = this.currentX;
+        // this.currentX = 'no'
+        this.finishX = this.currentX;
+        console.group();
+        console.log("startX: " + this.startX)
+        console.log("currentX: " + this.currentX)
+        console.log("finishX: " + this.finishX)
+        console.groupEnd()
       },
       moveSlider(event) {
         if (this.dragging) {
-          this.x = event.clientX;
-          console.log(this.x)
+          let slider = this.$refs.jfuSlider;
+          if(this.finishX == 0) {
+            this.currentX = event.clientX - this.startX;
+            if(this.currentX > 0) {
+              this.currentX = 0;
+              this.startX = 0;
+            }
+            if(this.currentX < -slider.clientWidth * 0.56) { //0.6 количество слайдов от единицы
+              this.currentX = -slider.clientWidth * 0.56;
+              this.startX = -slider.clientWidth * 0.56;
+            }
+          }else {
+            this.currentX = this.finishX + (event.clientX - this.touchX);
+            if(this.currentX > 0) {
+              this.currentX = 0;
+              this.startX = 0;
+            }
+            if(this.currentX < -slider.clientWidth * 0.56) { //0.6 количество слайдов от единицы
+              this.currentX = -slider.clientWidth * 0.56;
+              this.startX = -slider.clientWidth * 0.56;
+            }
+          }
+          slider.style.transform = `translateX(${this.currentX}px)`
+          console.log(-slider.clientWidth)
+          console.log("currentX: " + this.currentX)
         }
       }
     },
@@ -444,6 +481,10 @@
   .new-arrival__price {
     color: #dd8560;
     font-size: 15px;
+  }
+
+  .jfu__container {
+    overflow: hidden;
   }
 
   .jfu__wrap {
