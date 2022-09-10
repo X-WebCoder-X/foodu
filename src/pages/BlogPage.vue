@@ -1,4 +1,4 @@
 <template>
   <h1>Blog</h1>
-  <router-link to="/">asdsd</router-link>
+  <router-link to="/">Домой</router-link>
 </template>

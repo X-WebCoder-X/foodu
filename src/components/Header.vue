@@ -3,7 +3,7 @@
     <div class="header">
       <div class="header__item">
         <input type="checkbox" id="toogle-menu">
-        <label for="toogle">
+        <label for="toogle-menu">
           <img class="header__icon" src="@/assets/icons/menu.svg" alt="gamburger-menu">
         </label>
       </div>
@@ -27,7 +27,7 @@
     background-color: #E7EAEF;
     display: flex;
     justify-content: space-around;
-    padding: 18px 0 8px 0;
+    padding: 18px 0;
     align-items: center;
     position:fixed;
     width: 100%;

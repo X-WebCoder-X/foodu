@@ -158,9 +158,9 @@
         <img src="@/assets/icons/left-right-arrow.svg" class="left-right-arrow" alt="line">
         <div class="jfu__wrap" 
         ref="jfuSlider"
-        @mousedown = "startSlider"
-        @mousemove = "moveSlider"
-        @mouseup="stopSlider"
+        @touchstart="startSlider"
+        @touchmove="moveSlider"
+        @touchend="stopSlider"
         >
           <div 
           v-for="item in arrival"
@@ -169,7 +169,6 @@
             <img class="jfu__img" :src="item.url" alt="arrival">
             <p class="jfu__title">{{item.name}}</p>
             <span class="jfu__price">{{item.price}}</span>
-            <span class="jfu__price">x: {{x}}</span>
           </div>
         </div>
       </div>
@@ -310,16 +309,17 @@
       startSlider(event) {
         this.dragging = true;
         if(this.startX === 0) {
-          this.startX = event.clientX;
+          console.log(event)
+          this.startX = event.touches[0].clientX;
+          console.log("Первый клик: " + this.startX)
         }else {
-          this.touchX = event.clientX;
+          this.touchX = event.touches[0].clientX;
+          console.log("Не первый клик: " + this.startX)
         }
         console.log("startX: " + this.startX)
     },
       stopSlider() {
         this.dragging = false;  
-        //this.finishX = this.currentX;
-        // this.currentX = 'no'
         this.finishX = this.currentX;
         console.group();
         console.log("startX: " + this.startX)
@@ -331,7 +331,8 @@
         if (this.dragging) {
           let slider = this.$refs.jfuSlider;
           if(this.finishX == 0) {
-            this.currentX = event.clientX - this.startX;
+            console.log("Math.floor(event.touches[0].clientX): " + Math.floor(event.touches[0].clientX))
+            this.currentX = event.touches[0].clientX - this.startX;
             if(this.currentX > 0) {
               this.currentX = 0;
               this.startX = 0;
@@ -341,7 +342,7 @@
               this.startX = -slider.clientWidth * 0.56;
             }
           }else {
-            this.currentX = this.finishX + (event.clientX - this.touchX);
+            this.currentX = this.finishX + (event.touches[0].clientX - this.touchX);
             if(this.currentX > 0) {
               this.currentX = 0;
               this.startX = 0;
@@ -351,6 +352,7 @@
               this.startX = -slider.clientWidth * 0.56;
             }
           }
+          slider.style.transitionDuration = '700ms';
           slider.style.transform = `translateX(${this.currentX}px)`
           console.log(-slider.clientWidth)
           console.log("currentX: " + this.currentX)
@@ -360,7 +362,7 @@
     mounted(){
       this.startCarousel();
       this.filterArrival("all");
-      window.addEventListener('mouseup', this.stopSlider)
+      window.addEventListener('touchend', this.stopSlider)
     }
   }
 </script>
@@ -490,7 +492,7 @@
   .jfu__wrap {
     display: flex;
     width: calc(45%*5);
-    justify-content: space-between;
+    justify-content: space-between;  touch-action: none; user-select: none; -webkit-user-drag: none;
   }
 
   .jfu__item {

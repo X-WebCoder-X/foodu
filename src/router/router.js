@@ -8,6 +8,10 @@ const routes = [
     component: Home,
   },
   {
+    path: "/foodu",
+    component: Home,
+  },
+  {
     path: "/blog",
     component: Blog,
   },
